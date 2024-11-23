@@ -10,4 +10,6 @@ public interface FarmService {
     List<FarmDTO> getAllFarms();
 
     FarmDTO getFarmById(Long id);
+
+    void deleteFarm(Long id);
 }

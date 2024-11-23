@@ -1,6 +1,7 @@
 package com.astayc.citron.Controller;
-import com.astayc.citron.Entity.Farm;
-import com.astayc.citron.Repository.FarmRepository;
+
+import com.astayc.citron.DTO.FarmDTO;
+import com.astayc.citron.Service.FarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,24 +12,25 @@ import java.util.List;
 public class FarmController {
 
     @Autowired
-    private FarmRepository farmRepository;
+    private FarmService farmService;
 
-    // Create a new farm
     @PostMapping
-    public Farm createFarm(@RequestBody Farm farm) {
-        return farmRepository.save(farm);
+    public FarmDTO createFarm(@RequestBody FarmDTO farmDto) {
+        return farmService.createFarm(farmDto);
     }
 
-    // Get all farms
     @GetMapping
-    public List<Farm> getAllFarms() {
-        return farmRepository.findAll();
+    public List<FarmDTO> getAllFarms() {
+        return farmService.getAllFarms();
     }
 
-    // Get a specific farm by ID
     @GetMapping("/{id}")
-    public Farm getFarmById(@PathVariable Long id) {
-        return farmRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Farm not found with id: " + id));
+    public FarmDTO getFarmById(@PathVariable Long id) {
+        return farmService.getFarmById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFarm(@PathVariable Long id) {
+        farmService.deleteFarm(id);
     }
 }

@@ -3,6 +3,8 @@ spring:
                 url: jdbc:postgresql://localhost:5432/Citron
                 username: postgres
                 password: astayoucode
+                driver-class-name: org.postgresql.Driver
+
         jpa:
                 hibernate:
                         ddl-auto: update
@@ -11,8 +13,9 @@ spring:
                         hibernate:
                                 format_sql: true
 
-# Enable Liquibase
-        spring.liquibase.enabled=true
-  
-  # Set the path to the changelog file
-        spring.liquibase.change-log=classpath:/db/changelog/db.changelog-master.xml
+        liquibase:
+                enabled: true
+                change-log: classpath:db/changelog/db.changelog-master.xml
+
+server:
+        port: 8082

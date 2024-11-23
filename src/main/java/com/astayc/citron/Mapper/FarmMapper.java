@@ -11,7 +11,7 @@ import java.util.List;
 public interface FarmMapper {
     @Mapping(target = "id", source = "id")
 
-    FarmDTO toDto(Farm farm);
+    FarmDTO toDTO(Farm farm);
     Farm toEntity(FarmDTO farmDto);
     List<FarmDTO> toDtoList(List<Farm> farms);
 }
