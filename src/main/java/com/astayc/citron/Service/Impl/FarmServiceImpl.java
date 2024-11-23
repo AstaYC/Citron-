@@ -56,4 +56,12 @@ public class FarmServiceImpl implements FarmService {
         }
         farmRepository.deleteById(id);
     }
+
+    @Override
+    public double calculateTotalArea() {
+        return farmRepository.findAll()
+                .stream()
+                .mapToDouble(Farm::getArea)
+                .sum();
+    }
 }

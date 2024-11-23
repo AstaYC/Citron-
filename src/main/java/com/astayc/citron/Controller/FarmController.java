@@ -4,6 +4,8 @@ import com.astayc.citron.DTO.FarmDTO;
 import com.astayc.citron.Service.FarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
 
 import java.util.List;
 
@@ -32,5 +34,11 @@ public class FarmController {
     @DeleteMapping("/{id}")
     public void deleteFarm(@PathVariable Long id) {
         farmService.deleteFarm(id);
+    }
+
+    @GetMapping("/totalArea")
+    public ResponseEntity<Double> getTotalArea() {
+        double totalArea = farmService.calculateTotalArea();
+        return ResponseEntity.ok(totalArea);
     }
 }

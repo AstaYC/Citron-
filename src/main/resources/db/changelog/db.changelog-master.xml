@@ -1,11 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <!-- Changeset for creating a table -->
+    <!-- Original table creation -->
     <changeSet id="1" author="yourusername">
+        <preConditions onFail="MARK_RAN">
+            <not>
+            <tableExists tableName="farm"/>
+        </not>
+        </preConditions>
         <createTable tableName="farm">
             <column name="id" type="serial">
                 <constraints primaryKey="true" nullable="false"/>
@@ -23,6 +29,28 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <!-- If you need to modify the existing id column to serial -->
+    <changeSet id="2" author="yourname">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="farm"/>
+            <columnExists tableName="farm" columnName="id"/>
+        </preConditions>
+        <!-- First, drop the primary key constraint if it exists -->
+        <dropPrimaryKey tableName="farm"/>
+
+        <!-- Modify the column to use serial -->
+        <sql>
+            ALTER TABLE farm ALTER COLUMN id DROP DEFAULT;
+            DROP SEQUENCE IF EXISTS farm_id_seq CASCADE;
+            CREATE SEQUENCE farm_id_seq OWNED BY farm.id;
+            ALTER TABLE farm ALTER COLUMN id SET DEFAULT nextval('farm_id_seq');
+            SELECT setval('farm_id_seq', (SELECT COALESCE(MAX(id), 0) + 1 FROM farm));
+        </sql>
+
+        <!-- Re-add the primary key constraint -->
+        <addPrimaryKey tableName="farm" columnNames="id"/>
     </changeSet>
 
 </databaseChangeLog>
