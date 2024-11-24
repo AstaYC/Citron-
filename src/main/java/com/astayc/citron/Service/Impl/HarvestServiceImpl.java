@@ -1,14 +1,19 @@
 package com.astayc.citron.Service.Impl;
 
+import com.astayc.citron.Entity.Enum.Season;
 import com.astayc.citron.Entity.Harvest;
 import com.astayc.citron.Entity.HarvestDetail;
+import com.astayc.citron.Entity.Tree;
 import com.astayc.citron.Repository.HarvestDetailRepository;
 import com.astayc.citron.Repository.HarvestRepository;
 import com.astayc.citron.Repository.TreeRepository;
 import com.astayc.citron.Service.HarvestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -16,40 +21,69 @@ import java.util.List;
 public class HarvestServiceImpl implements HarvestService {
 
     private final HarvestRepository harvestRepository;
-    private final HarvestDetailRepository harvestDetailRepository;
     private final TreeRepository treeRepository;
+    private final HarvestDetailRepository harvestDetailRepository;
 
-    @Override
-    public Harvest createHarvest(Harvest harvest, List<HarvestDetail> details, List<Long> treeIds) {
-        // Save the harvest first
+    @Transactional
+    public Harvest createHarvest(Harvest harvest) {
+        // 1. Calculate the season based on the harvest date
+        harvest.setSeason(determineSeason(harvest.getHarvestDate()));
+
+        // 2. Save the Harvest entity first to generate its ID
         Harvest savedHarvest = harvestRepository.save(harvest);
 
-        // Map treeIds to HarvestDetails and save them
-        details.forEach(detail -> {
-            var tree = treeRepository.findById(detail.getTree().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Tree not found with ID: " + detail.getTree().getId()));
-            detail.setHarvest(savedHarvest);
-            detail.setTree(tree);
-            harvestDetailRepository.save(detail);
-        });
+        // 3. Get all trees in the specified field
+        List<Tree> trees = treeRepository.findByFieldId(harvest.getField().getId());
 
-        return savedHarvest;
+        double totalQuantity = 0.0;
+
+        for (Tree tree : trees) {
+            // 4. Adjust the tree's age based on the harvest date
+            int treeAgeAtHarvest = calculateTreeAge(tree, harvest.getHarvestDate());
+            tree.setAge(treeAgeAtHarvest);
+
+            // 5. Calculate productivity based on tree's age
+            double treeProductivity = calculateTreeProductivity(tree);
+
+            // 6. Create a HarvestDetail for the tree
+            HarvestDetail harvestDetail = new HarvestDetail();
+            harvestDetail.setTree(tree);
+            harvestDetail.setHarvest(savedHarvest); // Use the saved Harvest entity
+            harvestDetail.setQuantity(treeProductivity);
+
+            // Save HarvestDetail
+            harvestDetailRepository.save(harvestDetail);
+
+            // Accumulate total quantity
+            totalQuantity += treeProductivity;
+        }
+
+        // 7. Set the total quantity for the harvest
+        savedHarvest.setTotalQuantity(totalQuantity);
+
+        // 8. Save and return the updated Harvest
+        return harvestRepository.save(savedHarvest);
     }
 
-    @Override
-    public Harvest getHarvestById(Long id) {
-        return harvestRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Harvest not found with ID: " + id));
+    private Season determineSeason(LocalDate date) {
+        int month = date.getMonthValue();
+        if (month >= 3 && month <= 5) return Season.SPRING;
+        if (month >= 6 && month <= 8) return Season.SUMMER;
+        if (month >= 9 && month <= 11) return Season.FALL;
+        return Season.WINTER;
     }
 
-    @Override
-    public List<Harvest> getAllHarvests() {
-        return harvestRepository.findAll();
+    private int calculateTreeAge(Tree tree, LocalDate harvestDate) {
+        return Period.between(tree.getDatePlantation(), harvestDate).getYears();
     }
 
-    @Override
-    public void deleteHarvest(Long id) {
-        Harvest harvest = getHarvestById(id);
-        harvestRepository.delete(harvest);
+    private double calculateTreeProductivity(Tree tree) {
+        if (tree.getAge() < 3) {
+            return 2.5; // Young trees
+        } else if (tree.getAge() <= 10) {
+            return 12.0; // Peak productivity
+        } else {
+            return 20.0; // Older trees
+        }
     }
 }
