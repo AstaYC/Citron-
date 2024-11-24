@@ -1,5 +1,8 @@
 package com.astayc.citron.Service.Impl;
 
+import com.astayc.citron.DTO.FieldPerformanceDTO;
+import com.astayc.citron.DTO.HarvestDTO;
+import com.astayc.citron.DTO.ProductivityReportDTO;
 import com.astayc.citron.Entity.Enum.Season;
 import com.astayc.citron.Entity.Harvest;
 import com.astayc.citron.Entity.HarvestDetail;
@@ -14,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,4 +91,50 @@ public class HarvestServiceImpl implements HarvestService {
             return 20.0; // Older trees
         }
     }
+
+    @Override
+    public List<ProductivityReportDTO> generateProductivityReport() {
+        List<Harvest> harvests = harvestRepository.findAll();
+
+        return harvests.stream()
+                .collect(Collectors.groupingBy(
+                        harvest -> new AbstractMap.SimpleEntry<>(
+                                harvest.getField().getId(), // Replace 'getId()' if necessary
+                                harvest.getSeason()
+                        ),
+                        Collectors.summarizingDouble(Harvest::getTotalQuantity)
+                ))
+                .entrySet()
+                .stream()
+                .map(entry -> new ProductivityReportDTO(
+                        entry.getKey().getKey().toString(), // Field identifier (e.g., ID)
+                        entry.getKey().getValue().toString(), // Season
+                        entry.getValue().getSum(),
+                        entry.getValue().getAverage()
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<FieldPerformanceDTO> analyzeFieldPerformance(double threshold) {
+        List<Harvest> harvests = harvestRepository.findAll();
+
+        return harvests.stream()
+                .collect(Collectors.groupingBy(
+                        harvest -> harvest.getField().getId(), // Replace with a valid property
+                        Collectors.summingDouble(Harvest::getTotalQuantity)
+                ))
+                .entrySet()
+                .stream()
+                .map(entry -> new FieldPerformanceDTO(
+                        entry.getKey().toString(), // Field identifier (e.g., ID)
+                        entry.getValue(), // Total productivity
+                        entry.getValue() < threshold // Underperforming check
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+
 }
