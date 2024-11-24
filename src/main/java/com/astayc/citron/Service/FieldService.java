@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FieldService {
     Field addField(Long farmId, FieldDTO fieldDTO);
-    List<Field> getFieldsByFarm(Long farmId);
+    List<FieldDTO> getFieldsByFarm(Long farmId);
 }

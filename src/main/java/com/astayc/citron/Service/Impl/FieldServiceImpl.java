@@ -9,10 +9,14 @@ import com.astayc.citron.Mapper.FieldMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.astayc.citron.Service.FieldService;
+import org.modelmapper.ModelMapper;
+
+
 
 
 import jakarta.validation.ValidationException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FieldServiceImpl implements FieldService {
@@ -22,6 +26,9 @@ public class FieldServiceImpl implements FieldService {
 
     @Autowired
     private FarmRepository farmRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public Field addField(Long farmId, FieldDTO fieldDTO) {
@@ -54,7 +61,11 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
-    public List<Field> getFieldsByFarm(Long farmId) {
-        return fieldRepository.findByFarmId(farmId);  // Fetching fields for a farm
+    public List<FieldDTO> getFieldsByFarm(Long farmId) {
+        List<Field> fields = fieldRepository.findByFarmId(farmId); // Fetch fields from the DB
+        return fields.stream()
+                .map(field -> modelMapper.map(field, FieldDTO.class)) // Convert to DTO
+                .collect(Collectors.toList());
     }
+
 }

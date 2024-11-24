@@ -5,6 +5,7 @@ import com.astayc.citron.Entity.Field;
 import com.astayc.citron.Service.FieldService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,14 @@ public class FieldController {
     }
 
     @GetMapping("/{farmId}")
-    public List<Field> getFieldsByFarm(@PathVariable @NotNull Long farmId) {
-        return fieldService.getFieldsByFarm(farmId);  // Fetching fields related to a farm
+    public ResponseEntity<List<FieldDTO>> getFieldsByFarm(@PathVariable Long farmId) {
+        List<FieldDTO> fields = fieldService.getFieldsByFarm(farmId); // Fetching DTOs
+        if (fields.isEmpty()) {
+            // If no fields are found, return an empty list with HTTP 200 OK
+            return ResponseEntity.ok(fields);
+        } else {
+            return ResponseEntity.ok(fields);
+        }
     }
+
 }
