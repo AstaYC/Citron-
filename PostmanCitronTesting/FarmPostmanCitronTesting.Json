@@ -1,0 +1,41 @@
+1. Farm Management API Testing,
+
+1.1. Create a Farm
+
+Method: POST
+Endpoint: /api/farms
+Request Body:
+{
+  "name": "Farm 1",
+  "location": "Location A",
+  "area": 100.0,
+  "creationDate": "2024-11-25"
+}
+
+1.2. Get All Farms
+Method: GET
+Endpoint: /api/farms
+
+1.3. Update a Farm
+
+Method: PUT
+Endpoint: /api/farms/{farmId}
+Request Body:
+
+{
+"name": "Updated Farm",
+"location": "Updated Location",
+"area": 120.0,
+"creationDate": "2024-11-25"
+}
+
+
+1.4. Delete a Farm
+
+Method: DELETE
+Endpoint: /api/farms/{farmId}
+
+------------------------------
+
+
+

@@ -1,0 +1,82 @@
+5. Sale Management API Testing,
+5.1. Create a Sale
+
+Method: POST
+Endpoint: /api/sales
+Request Body:
+
+{
+"saleDate": "2024-11-25",
+"unitPrice": 10.0,
+"quantity": 10.0,
+"revenue": 100.0,
+"clientName": "Client A",
+"harvestId": 1
+}
+
+Expected Response:
+
+{
+"id": 1,
+"saleDate": "2024-11-25",
+"unitPrice": 10.0,
+"quantity": 10.0,
+"revenue": 100.0,
+"clientName": "Client A",
+"harvestId": 1
+}
+
+5.2. Get All Sales
+
+Method: GET
+Endpoint: /api/sales
+Expected Response:
+
+[
+{
+"id": 1,
+"saleDate": "2024-11-25",
+"unitPrice": 10.0,
+"quantity": 10.0,
+"revenue": 100.0,
+"clientName": "Client A",
+"harvestId": 1
+}
+]
+
+5.3. Update a Sale
+
+Method: PUT
+Endpoint: /api/sales/{saleId}
+Request Body:
+
+{
+"saleDate": "2024-11-26",
+"unitPrice": 12.0,
+"quantity": 5.0,
+"revenue": 60.0,
+"clientName": "Client B",
+"harvestId": 1
+}
+
+Expected Response:
+
+{
+"id": 1,
+"saleDate": "2024-11-26",
+"unitPrice": 12.0,
+"quantity": 5.0,
+"revenue": 60.0,
+"clientName": "Client B",
+"harvestId": 1
+}
+
+5.4. Delete a Sale
+
+Method: DELETE
+Endpoint: /api/sales/{saleId}
+Expected Response:
+
+{
+"message": "Sale deleted successfully"
+}

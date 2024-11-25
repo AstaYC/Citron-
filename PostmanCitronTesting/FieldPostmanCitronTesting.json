@@ -1,0 +1,29 @@
+2. Field Management API Testing
+
+2.1. Create a Field
+
+Method: POST
+Endpoint: /api/fields
+Request Body:
+
+{
+"name": "Field 1",
+"area": 20.0,
+"farmId": 1
+}
+
+2.2. Get All Fields
+
+Method: GET
+Endpoint: /api/fields
+Expected Response:
+
+[
+{
+"id": 1,
+"name": "Field 1",
+"area": 20.0,
+"farmId": 1
+}
+]
+

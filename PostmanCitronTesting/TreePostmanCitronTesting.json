@@ -1,0 +1,28 @@
+3. Tree Management API Testing,
+
+3.1. Create a Tree
+
+Method: POST
+Endpoint: /api/trees
+Request Body:
+
+{
+"plantingDate": "2020-05-01",
+"age": 4,
+"fieldId": 1
+}
+
+3.2. Get All Trees
+
+Method: GET
+Endpoint: /api/trees
+Expected Response:
+
+[
+{
+"id": 1,
+"plantingDate": "2020-05-01",
+"age": 4,
+"fieldId": 1
+}
+]

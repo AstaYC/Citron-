@@ -1,0 +1,39 @@
+4. Harvest Management API Testing,
+4.1. Create a Harvest
+
+Method: POST
+Endpoint: /api/harvests
+Request Body:
+
+{
+"harvestDate": "2024-11-01",
+"totalQuantity": 50.0,
+"season": "AUTUMN",
+"fieldId": 1
+}
+
+Expected Response:
+
+{
+"id": 1,
+"harvestDate": "2024-11-01",
+"totalQuantity": 50.0,
+"season": "AUTUMN",
+"fieldId": 1
+}
+
+4.2. Get All Harvests
+
+Method: GET
+Endpoint: /api/harvests
+Expected Response:
+
+[
+{
+"id": 1,
+"harvestDate": "2024-11-01",
+"totalQuantity": 50.0,
+"season": "AUTUMN",
+"fieldId": 1
+}
+]
