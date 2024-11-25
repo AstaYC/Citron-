@@ -3,6 +3,7 @@ package com.astayc.citron.Service.Impl;
 import com.astayc.citron.DTO.SaleDTO;
 import com.astayc.citron.Entity.Harvest;
 import com.astayc.citron.Entity.Sale;
+import com.astayc.citron.Mapper.SaleMapper;
 import com.astayc.citron.Repository.HarvestRepository;
 import com.astayc.citron.Repository.SaleRepository;
 import com.astayc.citron.Service.SaleService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SaleServiceImpl implements SaleService {
@@ -19,6 +22,9 @@ public class SaleServiceImpl implements SaleService {
 
     @Autowired
     private HarvestRepository harvestRepository;
+
+    @Autowired
+    private SaleMapper saleMapper;
 
     public SaleDTO createSale(SaleDTO saleDTO) {
         Harvest harvest = harvestRepository.findById(saleDTO.getHarvestId())
@@ -48,5 +54,38 @@ public class SaleServiceImpl implements SaleService {
         saleDTO.setId(savedSale.getId());
         saleDTO.setRevenue(revenue);
         return saleDTO;
+    }
+
+    // Get All Sales
+    @Override
+    public List<SaleDTO> getAllSales() {
+        return saleRepository.findAll()
+                .stream()
+                .map(saleMapper::toDTO) // Use mapper
+                .collect(Collectors.toList());
+    }
+
+    // Update Sale
+    @Override
+    public SaleDTO updateSale(Long id, SaleDTO saleDTO) {
+        Sale existingSale = saleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sale not found with id " + id));
+
+        // Update fields
+        existingSale.setSaleDate(saleDTO.getSaleDate());
+        existingSale.setUnitPrice(saleDTO.getUnitPrice());
+        existingSale.setRevenue(saleDTO.getRevenue());
+        existingSale.setClientName(saleDTO.getClientName());
+
+        Sale updatedSale = saleRepository.save(existingSale);
+        return saleMapper.toDTO(updatedSale); // Use mapper
+    }
+
+    // Delete Sale
+    @Override
+    public void deleteSale(Long id) {
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sale not found with id " + id));
+        saleRepository.delete(sale);
     }
 }

@@ -7,8 +7,6 @@ Request Body:
 
 {
 "harvestDate": "2024-11-01",
-"totalQuantity": 50.0,
-"season": "AUTUMN",
 "fieldId": 1
 }
 
@@ -37,3 +35,18 @@ Expected Response:
 "fieldId": 1
 }
 ]
+
+4.3. Rapport of productivité
+Method: GET
+Endpoint: /api/harvests/reports/productivity
+
+
+4.4. Rapport of field-performance
+Method: GET
+Endpoint: /api/harvests/field-performance
+
+4.5. GET the HarvestDetail
+Method: GET
+EndPoint : api/harvest-details/id
+
+

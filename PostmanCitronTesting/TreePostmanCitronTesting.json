@@ -7,8 +7,7 @@ Endpoint: /api/trees
 Request Body:
 
 {
-"plantingDate": "2020-05-01",
-"age": 4,
+"datePlantation": "2020-05-01",
 "fieldId": 1
 }
 
@@ -26,3 +25,9 @@ Expected Response:
 "fieldId": 1
 }
 ]
+
+4.2. GetProductivity
+
+Method : Get
+Endpoint : /api/trees/field/{fieldId}/productivity
+

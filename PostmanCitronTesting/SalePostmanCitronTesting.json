@@ -8,8 +8,6 @@ Request Body:
 {
 "saleDate": "2024-11-25",
 "unitPrice": 10.0,
-"quantity": 10.0,
-"revenue": 100.0,
 "clientName": "Client A",
 "harvestId": 1
 }

@@ -7,6 +7,7 @@ import com.astayc.citron.Exception.ResourceNotFoundException;
 import com.astayc.citron.Repository.TreeRepository;
 import com.astayc.citron.Repository.FieldRepository;
 import com.astayc.citron.Service.TreeService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TreeServiceImpl implements TreeService {
 
     private final TreeRepository treeRepository;
