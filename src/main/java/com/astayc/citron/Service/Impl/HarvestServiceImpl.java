@@ -29,6 +29,7 @@ public class HarvestServiceImpl implements HarvestService {
     private final TreeRepository treeRepository;
     private final HarvestDetailRepository harvestDetailRepository;
 
+
     @Transactional
     public Harvest createHarvest(Harvest harvest) {
         // 1. Calculate the season based on the harvest date
